@@ -22,6 +22,7 @@ app.use(express.static("public"));
 
 let posts = [];
 
+
 app.get("/", function(req, res){
   res.render("home", {
     startingContent: homeStartingContent,
@@ -70,18 +71,12 @@ app.get("/posts/:postName", function(req, res){
 });
 
 // need to write out an app.get function that open a route /weather Need an EJS view called weather.ejs that displays one text field to input city name
-//This EJS view will input a city name from user
-// Then need to write out an app.get function that will use the city name to query the Weather API to retrieve basic weather information - temperature, description and humidity
-// The display of the weather information must be saved to an array and then the results of the array must be pushed to the /weather EJS view to display
-// The /weather route and page created by weather.ejs page should allow for the input of the city name, and the display of the weather for the city - city name, weather icon image, temperature in F, description, humidity, wind direction
 
-
-// need to write out an app.get function that open a route /weather Need an EJS view called weather.ejs that displays one text field to input city name
+var streamedWeatherData = [];
 
 app.get("/weather", function(req, res) {
-res.render("weather", {weatherContent: weatherContent, posts:posts});
+res.render("weather", {weatherContent: weatherContent, streamedWeatherData:streamedWeatherData});
 });
-
 app.post("/weather", function(req, res) {
   var city = String(req.body.cityInput);
   const units = "imperial";
@@ -98,12 +93,13 @@ app.post("/weather", function(req, res) {
         const icon = weatherData.weather[0].icon;
         const imageURL = "http://openweathermap.org/img/wn/" + icon + "@2x.png";
 
-        res.write("<h1> The weather is " + weatherDescription + "<h1>");
-        res.write("<h2>The Temperature in " + city + " " + " is " + temp + "°F and the wind speed is " + wind + "MPH with a current humidity of " + humidity + "%. <h2>");
-        res.write("<img src=" + imageURL +">");
-        
-        res.send();
-        
+        //res.write("<h1> The weather is " + weatherDescription + "<h1>")
+        //streamedWeatherData.push("<h1> The weather is " + weatherDescription + "<h1>");
+        streamedWeatherData.push("<h2> The weather is " + weatherDescription + ". <h2>" + "<h3>The Temperature in " + city + " " + " is " + temp + "°F and the wind speed is " + wind + "MPH with a current humidity of " + humidity + "%. <h3>" + "<img src=" + imageURL +">");
+        //streamedWeatherData.push("<img src=" + imageURL +">");
+
+        //res.send();
+        res.render("weather", {weatherContent: weatherContent, streamedWeatherData:streamedWeatherData});
       });
     });
 });
